@@ -85,3 +85,27 @@ func (s *ChainlinkService) fetchPriceFromChainlink(asset string) (*PriceData, er
 		Timestamp: latestRoundData.UpdatedAt.Int64(),
 	}, nil
 }
+
+func (s *ChainlinkService) GetAllPricesUSD() ([]*PriceData, error) {
+	var prices []*PriceData
+	for asset := range s.contractAddrs {
+		priceData, err := s.fetchPriceFromChainlink(asset)
+		if err != nil {
+			return nil, fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
+		}
+		prices = append(prices, priceData)
+	}
+	return prices, nil
+}
+
+func (s *ChainlinkService) GetAllPricesBRL() ([]*PriceData, error) {
+	var prices []*PriceData
+	for asset := range s.contractAddrs {
+		priceData, err := s.GetPriceBRL(asset)
+		if err != nil {
+			return nil, fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
+		}
+		prices = append(prices, priceData)
+	}
+	return prices, nil
+}
