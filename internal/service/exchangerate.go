@@ -29,13 +29,8 @@ func (s *ExchangeService) GetBRLRate() (*big.Float, error) {
 		return nil, fmt.Errorf("falha ao buscar taxa BRL, status code: %d", resp.StatusCode)
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("falha ao ler o corpo da resposta: %w", err)
-	}
-
 	var result ExchangeRateResponse
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("não conseguiu desmantelar a resposta: %w", err)
 	}
 
