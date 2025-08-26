@@ -1,0 +1,51 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/dev-araujo/chainlink-price-feed/internal/service"
+	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/joho/godotenv"
+)
+
+func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema.")
+	}
+
+	rpcURL := os.Getenv("SEPOLIA_RPC_URL")
+	if rpcURL == "" {
+		log.Fatal("A variável de ambiente SEPOLIA_RPC_URL é necessária.")
+	}
+
+	client, err := ethclient.Dial(rpcURL)
+	if err != nil {
+		log.Fatalf("Falha ao conectar ao nó Ethereum: %v", err)
+	}
+	defer client.Close()
+
+	chainlinkService := service.NewChainlinkService(client)
+
+	asset := "xau" // eth| link| btc | aud | eur | jpy | ftse| xau |
+
+	fmt.Printf("Buscando preço para %s/USD...\n", asset)
+	priceDataUSD, err := chainlinkService.GetPriceUSD(asset)
+	if err != nil {
+		log.Fatalf("Erro ao buscar preço em USD: %v", err)
+	}
+	fmt.Printf("Par: %s\n", priceDataUSD.Pair)
+	fmt.Printf("Preço: %s\n", priceDataUSD.Price.String())
+	fmt.Printf("Última atualização (Timestamp): %d\n", priceDataUSD.Timestamp)
+	fmt.Println("---------------------------------")
+
+	fmt.Printf("Buscando preço para %s/BRL...\n", asset)
+	priceDataBRL, err := chainlinkService.GetPriceBRL(asset)
+	if err != nil {
+		log.Fatalf("Erro ao buscar preço em BRL: %v", err)
+	}
+	fmt.Printf("Par: %s\n", priceDataBRL.Pair)
+	fmt.Printf("Preço: %s\n", priceDataBRL.Price.String())
+	fmt.Printf("Última atualização (Timestamp): %d\n", priceDataBRL.Timestamp)
+}
