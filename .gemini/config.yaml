@@ -1,0 +1,23 @@
+# Arquivo de configuração do Gemini Code Assist
+# Para mais informações, acesse: https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github?hl=pt-br#custom-configuration
+
+# Linguagem principal do projeto
+project_language: Go
+
+# .gemini/config.yaml
+have_fun: true
+code_review:
+  disable: false
+  comment_severity_threshold: MEDIUM
+  max_review_comments: -1
+  pull_request_opened:
+    help: false
+    summary: true
+    code_review: true
+ignore_patterns:
+  - "**/*_test.go"
+  - "**/vendor/**"
+  - "**/third_party/**"
+  - "go.sum"
+  - ".env.example"
+  - "LICENSE"
