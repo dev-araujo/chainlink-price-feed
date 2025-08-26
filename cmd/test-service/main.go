@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -31,7 +32,7 @@ func main() {
 	asset := "xau" // eth| link| btc | aud | eur | jpy | ftse| xau |
 
 	fmt.Printf("Buscando preço para %s/USD...\n", asset)
-	priceDataUSD, err := chainlinkService.GetPriceUSD(asset)
+	priceDataUSD, err := chainlinkService.GetPriceUSD(context.Background(), asset)
 	if err != nil {
 		log.Fatalf("Erro ao buscar preço em USD: %v", err)
 	}
@@ -41,7 +42,7 @@ func main() {
 	fmt.Println("---------------------------------")
 
 	fmt.Printf("Buscando preço para %s/BRL...\n", asset)
-	priceDataBRL, err := chainlinkService.GetPriceBRL(asset)
+	priceDataBRL, err := chainlinkService.GetPriceBRL(context.Background(), asset)
 	if err != nil {
 		log.Fatalf("Erro ao buscar preço em BRL: %v", err)
 	}

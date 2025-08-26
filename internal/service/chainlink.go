@@ -1,14 +1,18 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 	"strings"
+	"sync"
 
 	"github.com/dev-araujo/chainlink-price-feed/contracts"
 	"github.com/dev-araujo/chainlink-price-feed/internal/config"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"golang.org/x/sync/errgroup"
 )
 
 type PriceData struct {
@@ -26,12 +30,12 @@ func NewChainlinkService(client *ethclient.Client) *ChainlinkService {
 	return &ChainlinkService{client: client, contractAddrs: config.ContractAddresses}
 }
 
-func (s *ChainlinkService) GetPriceUSD(asset string) (*PriceData, error) {
-	return s.fetchPriceFromChainlink(asset)
+func (s *ChainlinkService) GetPriceUSD(ctx context.Context, asset string) (*PriceData, error) {
+	return s.fetchPriceFromChainlink(ctx, asset)
 }
 
-func (s *ChainlinkService) GetPriceBRL(asset string) (*PriceData, error) {
-	assetPriceData, err := s.fetchPriceFromChainlink(asset)
+func (s *ChainlinkService) GetPriceBRL(ctx context.Context, asset string) (*PriceData, error) {
+	assetPriceData, err := s.fetchPriceFromChainlink(ctx, asset)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +53,7 @@ func (s *ChainlinkService) GetPriceBRL(asset string) (*PriceData, error) {
 	}, nil
 }
 
-func (s *ChainlinkService) fetchPriceFromChainlink(asset string) (*PriceData, error) {
+func (s *ChainlinkService) fetchPriceFromChainlink(ctx context.Context, asset string) (*PriceData, error) {
 	addressHex, ok := s.contractAddrs[asset]
 	if !ok {
 		return nil, fmt.Errorf("ativo '%s' não suportado", asset)
@@ -61,12 +65,14 @@ func (s *ChainlinkService) fetchPriceFromChainlink(asset string) (*PriceData, er
 		return nil, fmt.Errorf("falha ao instanciar contrato para %s: %w", asset, err)
 	}
 
-	decimals, err := priceFeed.Decimals(nil)
+	callOpts := &bind.CallOpts{Context: ctx}
+
+	decimals, err := priceFeed.Decimals(callOpts)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao buscar decimais para %s: %w", asset, err)
 	}
 
-	latestRoundData, err := priceFeed.LatestRoundData(nil)
+	latestRoundData, err := priceFeed.LatestRoundData(callOpts)
 	if err != nil {
 		return nil, fmt.Errorf("falha ao buscar dados para %s: %w", asset, err)
 	}
@@ -84,4 +90,38 @@ func (s *ChainlinkService) fetchPriceFromChainlink(asset string) (*PriceData, er
 		Price:     price,
 		Timestamp: latestRoundData.UpdatedAt.Int64(),
 	}, nil
+}
+
+func (s *ChainlinkService) fetchAllPrices(priceFetcher func(ctx context.Context, asset string) (*PriceData, error)) ([]*PriceData, error) {
+	prices := make([]*PriceData, 0, len(s.contractAddrs))
+	var mu sync.Mutex
+	g, ctx := errgroup.WithContext(context.Background())
+
+	for asset := range s.contractAddrs {
+		asset := asset
+		g.Go(func() error {
+			priceData, err := priceFetcher(ctx, asset)
+			if err != nil {
+				return fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
+			}
+			mu.Lock()
+			prices = append(prices, priceData)
+			mu.Unlock()
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
+
+	return prices, nil
+}
+
+func (s *ChainlinkService) GetAllPricesUSD() ([]*PriceData, error) {
+	return s.fetchAllPrices(s.GetPriceUSD)
+}
+
+func (s *ChainlinkService) GetAllPricesBRL() ([]*PriceData, error) {
+	return s.fetchAllPrices(s.GetPriceBRL)
 }
