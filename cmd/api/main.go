@@ -27,7 +27,10 @@ func main() {
 	}
 	log.Println("Conectado com sucesso à rede Sepolia!")
 
-	chainlinkService := service.NewChainlinkService(client)
+	exchangeService := service.NewExchangeService()
+
+	chainlinkService := service.NewChainlinkService(client, exchangeService)
+
 	priceHandler := handler.NewPriceHandler(chainlinkService)
 
 	router := gin.Default()

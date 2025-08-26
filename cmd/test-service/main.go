@@ -27,7 +27,9 @@ func main() {
 	}
 	defer client.Close()
 
-	chainlinkService := service.NewChainlinkService(client)
+	exchangeService := service.NewExchangeService()
+
+	chainlinkService := service.NewChainlinkService(client, exchangeService)
 
 	asset := "xau" // eth| link| btc | aud | eur | jpy | ftse| xau |
 

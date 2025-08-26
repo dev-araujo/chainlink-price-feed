@@ -22,12 +22,17 @@ type PriceData struct {
 }
 
 type ChainlinkService struct {
-	client        *ethclient.Client
-	contractAddrs map[string]string
+	client          *ethclient.Client
+	contractAddrs   map[string]string
+	exchangeService *ExchangeService
 }
 
-func NewChainlinkService(client *ethclient.Client) *ChainlinkService {
-	return &ChainlinkService{client: client, contractAddrs: config.ContractAddresses}
+func NewChainlinkService(client *ethclient.Client, exchangeService *ExchangeService) *ChainlinkService {
+	return &ChainlinkService{
+		client:          client,
+		contractAddrs:   config.ContractAddresses,
+		exchangeService: exchangeService,
+	}
 }
 
 func (s *ChainlinkService) GetPriceUSD(ctx context.Context, asset string) (*PriceData, error) {
@@ -40,11 +45,12 @@ func (s *ChainlinkService) GetPriceBRL(ctx context.Context, asset string) (*Pric
 		return nil, err
 	}
 
-	brlRateData := &PriceData{
-		Price: new(big.Float).SetFloat64(5.3), // TODO
+	brlRate, err := s.exchangeService.GetBRLRate()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get BRL exchange rate: %w", err)
 	}
 
-	priceInBRL := new(big.Float).Mul(assetPriceData.Price, brlRateData.Price)
+	priceInBRL := new(big.Float).Mul(assetPriceData.Price, brlRate)
 
 	return &PriceData{
 		Pair:      fmt.Sprintf("%s/BRL", strings.ToUpper(asset)),
