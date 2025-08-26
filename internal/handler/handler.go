@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"net/http"
 	"strings"
 
@@ -26,10 +27,10 @@ func (h *PriceHandler) RegisterRoutes(router *gin.Engine) {
 	}
 }
 
-func (h *PriceHandler) getPrice(c *gin.Context, priceFetcher func(asset string) (*service.PriceData, error)) {
+func (h *PriceHandler) getPrice(c *gin.Context, priceFetcher func(ctx context.Context, asset string) (*service.PriceData, error)) {
 	asset := strings.ToLower(c.Param("asset"))
 
-	priceData, err := priceFetcher(asset)
+	priceData, err := priceFetcher(c.Request.Context(), asset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
