@@ -26,33 +26,30 @@ func (h *PriceHandler) RegisterRoutes(router *gin.Engine) {
 	}
 }
 
-func (h *PriceHandler) getAllPricesUsd(c *gin.Context) {
-	priceData, err := h.service.GetAllPricesUSD()
+func (h *PriceHandler) getPrice(c *gin.Context, priceFetcher func(asset string) (*service.PriceData, error)) {
+	asset := strings.ToLower(c.Param("asset"))
+
+	priceData, err := priceFetcher(asset)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-response := make([]gin.H, 0, len(priceData))
-	for _, p := range priceData {
-		response = append(response, gin.H{
-			"pair":      p.Pair,
-			"price":     p.Price.Text('f', 2),
-			"timestamp": p.Timestamp,
-		})
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, gin.H{
+		"pair":      priceData.Pair,
+		"price":     priceData.Price.Text('f', 2),
+		"timestamp": priceData.Timestamp,
+	})
 }
 
-func (h *PriceHandler) getAllPricesBrl(c *gin.Context) {
-	priceData, err := h.service.GetAllPricesBRL()
+func (h *PriceHandler) getAllPrices(c *gin.Context, priceFetcher func() ([]*service.PriceData, error)) {
+	priceData, err := priceFetcher()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-response := make([]gin.H, 0, len(priceData))
+	response := make([]gin.H, 0, len(priceData))
 	for _, p := range priceData {
 		response = append(response, gin.H{
 			"pair":      p.Pair,
@@ -65,33 +62,17 @@ response := make([]gin.H, 0, len(priceData))
 }
 
 func (h *PriceHandler) getPriceUsd(c *gin.Context) {
-	asset := strings.ToLower(c.Param("asset"))
-
-	priceData, err := h.service.GetPriceUSD(asset)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"pair":      priceData.Pair,
-		"price":     priceData.Price.Text('f', 2),
-		"timestamp": priceData.Timestamp,
-	})
+	h.getPrice(c, h.service.GetPriceUSD)
 }
 
 func (h *PriceHandler) getPriceBrl(c *gin.Context) {
-	asset := strings.ToLower(c.Param("asset"))
+	h.getPrice(c, h.service.GetPriceBRL)
+}
 
-	priceData, err := h.service.GetPriceBRL(asset)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		return
-	}
+func (h *PriceHandler) getAllPricesUsd(c *gin.Context) {
+	h.getAllPrices(c, h.service.GetAllPricesUSD)
+}
 
-	c.JSON(http.StatusOK, gin.H{
-		"pair":      priceData.Pair,
-		"price":     priceData.Price.Text('f', 2),
-		"timestamp": priceData.Timestamp,
-	})
+func (h *PriceHandler) getAllPricesBrl(c *gin.Context) {
+	h.getAllPrices(c, h.service.GetAllPricesBRL)
 }

@@ -1,9 +1,13 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 	"strings"
+	"sync"
+
+	"golang.org/x/sync/errgroup"
 
 	"github.com/dev-araujo/chainlink-price-feed/contracts"
 	"github.com/dev-araujo/chainlink-price-feed/internal/config"
@@ -88,24 +92,52 @@ func (s *ChainlinkService) fetchPriceFromChainlink(asset string) (*PriceData, er
 
 func (s *ChainlinkService) GetAllPricesUSD() ([]*PriceData, error) {
 	var prices []*PriceData
+	var mu sync.Mutex
+	g, _ := errgroup.WithContext(context.Background())
+
 	for asset := range s.contractAddrs {
-		priceData, err := s.fetchPriceFromChainlink(asset)
-		if err != nil {
-			return nil, fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
-		}
-		prices = append(prices, priceData)
+		asset := asset // https://golang.org/doc/faq#closures_and_goroutines
+		g.Go(func() error {
+			priceData, err := s.fetchPriceFromChainlink(asset)
+			if err != nil {
+				return fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
+			}
+			mu.Lock()
+			prices = append(prices, priceData)
+			mu.Unlock()
+			return nil
+		})
 	}
+
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
+
 	return prices, nil
 }
 
 func (s *ChainlinkService) GetAllPricesBRL() ([]*PriceData, error) {
 	var prices []*PriceData
+	var mu sync.Mutex
+	g, _ := errgroup.WithContext(context.Background())
+
 	for asset := range s.contractAddrs {
-		priceData, err := s.GetPriceBRL(asset)
-		if err != nil {
-			return nil, fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
-		}
-		prices = append(prices, priceData)
+		asset := asset // https://golang.org/doc/faq#closures_and_goroutines
+		g.Go(func() error {
+			priceData, err := s.GetPriceBRL(asset)
+			if err != nil {
+				return fmt.Errorf("falha ao buscar preço para %s: %w", asset, err)
+			}
+			mu.Lock()
+			prices = append(prices, priceData)
+			mu.Unlock()
+			return nil
+		})
 	}
+
+	if err := g.Wait(); err != nil {
+		return nil, err
+	}
+
 	return prices, nil
 }
