@@ -33,7 +33,7 @@ func (h *PriceHandler) getAllPricesUsd(c *gin.Context) {
 		return
 	}
 
-	var response []gin.H
+response := make([]gin.H, 0, len(priceData))
 	for _, p := range priceData {
 		response = append(response, gin.H{
 			"pair":      p.Pair,
