@@ -47,7 +47,7 @@ func (s *ChainlinkService) GetPriceBRL(ctx context.Context, asset string) (*Pric
 
 	brlRate, err := s.exchangeService.GetBRLRate()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get BRL exchange rate: %w", err)
+		return nil, fmt.Errorf("não foi possível obter a taxa de câmbio do BRL: %w", err)
 	}
 
 	priceInBRL := new(big.Float).Mul(assetPriceData.Price, brlRate)
