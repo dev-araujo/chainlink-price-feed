@@ -19,7 +19,7 @@ func Load() *Config {
 	}
 
 	return &Config{
-		RpcURL:     os.Getenv("SEPOLIA_RPC_URL"),
+		RpcURL:     os.Getenv("RPC_URL"),
 		ServerPort: os.Getenv("SERVER_PORT"),
 	}
 }
