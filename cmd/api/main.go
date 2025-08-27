@@ -15,7 +15,7 @@ import (
 func main() {
 	cfg := config.Load()
 	if cfg.RpcURL == "" {
-		log.Fatal("SEPOLIA_RPC_URL não pode ser vazia.")
+		log.Fatal("RPC_URL não pode ser vazia.")
 	}
 	if cfg.ServerPort == "" {
 		cfg.ServerPort = "8080"
@@ -23,15 +23,15 @@ func main() {
 
 	client, err := ethclient.Dial(cfg.RpcURL)
 	if err != nil {
-		log.Fatalf("Falha ao conectar ao nó da Sepolia: %v", err)
+		log.Fatalf("Falha ao conectar ao nó da rede principal da Ethereum: %v", err)
 	}
-	log.Println("Conectado com sucesso à rede Sepolia!")
+	log.Println("Conectado com sucesso à rede principal da Ethereum!")
 
 	exchangeService := service.NewExchangeService()
-
 	chainlinkService := service.NewChainlinkService(client, exchangeService)
+	assetService := service.NewAssetService()
 
-	priceHandler := handler.NewPriceHandler(chainlinkService)
+	priceHandler := handler.NewPriceHandler(chainlinkService, assetService)
 
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -39,7 +39,7 @@ func main() {
 	priceHandler.RegisterRoutes(router)
 
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "UP"})
+		c.JSON(200, gin.H{"status": "ATIVO"})
 	})
 
 	serverAddr := fmt.Sprintf(":%s", cfg.ServerPort)
