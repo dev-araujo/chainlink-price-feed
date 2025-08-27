@@ -16,9 +16,9 @@ func main() {
 		log.Println("Arquivo .env não encontrado, usando variáveis de ambiente do sistema.")
 	}
 
-	rpcURL := os.Getenv("SEPOLIA_RPC_URL")
+	rpcURL := os.Getenv("RPC_URL")
 	if rpcURL == "" {
-		log.Fatal("A variável de ambiente SEPOLIA_RPC_URL é necessária.")
+		log.Fatal("A variável de ambiente RPC_URL é necessária.")
 	}
 
 	client, err := ethclient.Dial(rpcURL)

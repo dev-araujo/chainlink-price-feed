@@ -15,7 +15,7 @@ import (
 func main() {
 	cfg := config.Load()
 	if cfg.RpcURL == "" {
-		log.Fatal("SEPOLIA_RPC_URL não pode ser vazia.")
+		log.Fatal("RPC_URL não pode ser vazia.")
 	}
 	if cfg.ServerPort == "" {
 		cfg.ServerPort = "8080"
@@ -23,9 +23,9 @@ func main() {
 
 	client, err := ethclient.Dial(cfg.RpcURL)
 	if err != nil {
-		log.Fatalf("Falha ao conectar ao nó da Sepolia: %v", err)
+		log.Fatalf("Falha ao conectar ao nó da rede principal da Ethereum: %v", err)
 	}
-	log.Println("Conectado com sucesso à rede Sepolia!")
+	log.Println("Conectado com sucesso à rede principal da Ethereum!")
 
 	exchangeService := service.NewExchangeService()
 	chainlinkService := service.NewChainlinkService(client, exchangeService)
