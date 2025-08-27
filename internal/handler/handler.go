@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -38,16 +40,19 @@ func (h *PriceHandler) RegisterRoutes(router *gin.Engine) {
 	}
 }
 
-func (h *PriceHandler) getPriceUsd(c *gin.Context) {
+func (h *PriceHandler) getPrice(c *gin.Context, getPriceFunc func(ctx context.Context, asset string) (*service.PriceData, error)) {
 	asset := strings.ToLower(c.Param("asset"))
 
-	priceData, err := h.chainlinkService.GetPriceUSD(c.Request.Context(), asset)
+	priceData, err := getPriceFunc(c.Request.Context(), asset)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"erro": err.Error()})
 		return
 	}
 
-	imageURL, _ := h.assetService.GetAssetImageURL(asset)
+	imageURL, err := h.assetService.GetAssetImageURL(asset)
+	if err != nil {
+		log.Printf("não foi possível obter a URL da imagem para o ativo %s: %v", asset, err)
+	}
 
 	c.JSON(http.StatusOK, PriceResponse{
 		Pair:      priceData.Pair,
@@ -57,23 +62,12 @@ func (h *PriceHandler) getPriceUsd(c *gin.Context) {
 	})
 }
 
+func (h *PriceHandler) getPriceUsd(c *gin.Context) {
+	h.getPrice(c, h.chainlinkService.GetPriceUSD)
+}
+
 func (h *PriceHandler) getPriceBrl(c *gin.Context) {
-	asset := strings.ToLower(c.Param("asset"))
-
-	priceData, err := h.chainlinkService.GetPriceBRL(c.Request.Context(), asset)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"erro": err.Error()})
-		return
-	}
-
-	imageURL, _ := h.assetService.GetAssetImageURL(asset)
-
-	c.JSON(http.StatusOK, PriceResponse{
-		Pair:      priceData.Pair,
-		Price:     priceData.Price.Text('f', 2),
-		Timestamp: priceData.Timestamp,
-		ImageURL:  imageURL,
-	})
+	h.getPrice(c, h.chainlinkService.GetPriceBRL)
 }
 
 func (h *PriceHandler) getAllPricesUsd(c *gin.Context) {
@@ -106,7 +100,10 @@ func (h *PriceHandler) buildAndSendAllPricesResponse(c *gin.Context, priceData [
 			defer wg.Done()
 
 			assetSymbol := strings.ToLower(strings.Split(data.Pair, "/")[0])
-			imageURL, _ := h.assetService.GetAssetImageURL(assetSymbol)
+			imageURL, err := h.assetService.GetAssetImageURL(assetSymbol)
+			if err != nil {
+				log.Printf("não foi possível obter a URL da imagem para o ativo %s: %v", assetSymbol, err)
+			}
 
 			responses[index] = PriceResponse{
 				Pair:      data.Pair,
