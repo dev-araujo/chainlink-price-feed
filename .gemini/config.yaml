@@ -1,10 +1,10 @@
 # Arquivo de configuração do Gemini Code Assist
 # Para mais informações, acesse: https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github?hl=pt-br#custom-configuration
 
-# Linguagem principal do projeto
+# Cofiguração do Gemini Code Assist para projetos em Go
+# À partir dos PRs ele revisa o código, sugere melhorias e ajuda na geração de código
+# com base nas melhores práticas da linguagem Go.
 project_language: Go
-
-# .gemini/config.yaml
 have_fun: true
 code_review:
   disable: false
