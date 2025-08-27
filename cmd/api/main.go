@@ -28,10 +28,10 @@ func main() {
 	log.Println("Conectado com sucesso à rede Sepolia!")
 
 	exchangeService := service.NewExchangeService()
-
 	chainlinkService := service.NewChainlinkService(client, exchangeService)
+	assetService := service.NewAssetService()
 
-	priceHandler := handler.NewPriceHandler(chainlinkService)
+	priceHandler := handler.NewPriceHandler(chainlinkService, assetService)
 
 	router := gin.Default()
 	router.Use(cors.Default())
@@ -39,7 +39,7 @@ func main() {
 	priceHandler.RegisterRoutes(router)
 
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "UP"})
+		c.JSON(200, gin.H{"status": "ATIVO"})
 	})
 
 	serverAddr := fmt.Sprintf(":%s", cfg.ServerPort)
