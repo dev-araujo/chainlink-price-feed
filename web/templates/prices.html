@@ -1,0 +1,9 @@
+{{range .}}
+<div class="price-card">
+    <img src="{{.ImageURL}}" alt="{{.Pair}}">
+    <div>
+        <strong>{{.Pair}}</strong>
+        <p>R${{.Price}}</p>
+    </div>
+</div>
+{{end}}
