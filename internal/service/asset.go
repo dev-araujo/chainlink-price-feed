@@ -5,13 +5,13 @@ import (
 )
 
 var assetImageURLs = map[string]string{
-	"1inch": "https://cryptologos.cc/logos/1inch-1inch-logo.png?v=040",
-	"link":  "https://cryptologos.cc/logos/chainlink-link-logo.png?v=040",
-	"btc":   "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040",
-	"eth":   "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040",
-	"paxg":  "https://cryptologos.cc/logos/pax-gold-paxg-logo.png?v=040",
-	"stx":   "https://cryptologos.cc/logos/stacks-stx-logo.png?v=040",
-	"uni":   "https://cryptologos.cc/logos/uniswap-uni-logo.png?v=040",
+	"1inch": "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/1inch-logo.png?raw=true",
+	"link":  "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/link-logo.png?raw=true",
+	"btc":   "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/btc-logo.png?raw=true",
+	"eth":   "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/ether-logo.png?raw=true",
+	"paxg":  "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/paxg-logo.png?raw=true",
+	"stx":   "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/stx-logo.png?raw=true",
+	"uni":   "https://github.com/dev-araujo/chainlink-price-feed/blob/main/assets/tokens/uni-logo.png?raw=true",
 }
 
 type AssetService struct{}
