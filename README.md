@@ -4,7 +4,7 @@
 
   
 
-<img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go"> <img src="https://img.shields.io/badge/Gin-0077B5?style=for-the-badge&logo=gin&logoColor=white" alt="Gin"><img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Go-Ethereum"><img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"><img src="https://img.shields.io/badge/Chainlink-375BD2?style=for-the-badge&logo=chainlink&logoColor=white" alt="Chainlink">
+<img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go"> <img src="https://img.shields.io/badge/Gin-0077B5?style=for-the-badge&logo=gin&logoColor=white" alt="Gin"> <img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Go-Ethereum"> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"> <img src="https://img.shields.io/badge/Chainlink-375BD2?style=for-the-badge&logo=chainlink&logoColor=white" alt="Chainlink">
 
 # Chainlink Price Feed com GO
 
@@ -27,7 +27,7 @@ A aplicação se conecta a um nó da rede Ethereum, interage com os contratos in
 
 Siga as instruções abaixo para ter uma cópia do projeto rodando em sua máquina.
 
-### Instalação
+**Instalação**
 
 1.  Clone o repositório:
     ```sh
@@ -75,7 +75,7 @@ A API estará disponível em `http://localhost:8080`.
 
 ## Endpoints da API
 
-A API fornece os seguintes endpoints para consulta de preços:
+A API fornece os seguintes endpoints para consulta:
 
 | Método | Endpoint                  | Descrição                                            |
 | :----- | :------------------------ | :--------------------------------------------------- |
@@ -88,6 +88,7 @@ A API fornece os seguintes endpoints para consulta de preços:
 **Parâmetro de Path:**
 
 *   `:asset`: O símbolo do ativo a ser consultado (ex: `btc`, `eth`).
+     - Atualmente os seguintes ativos podem ser consultados: `1inch`, `link`, `btc`, `eth`, `paxg`, `stx`, `uni`
 
 **Exemplo 1: Preço de um único ativo em USD**
 
@@ -99,9 +100,10 @@ GET /api/price/eth/usd
 *Resposta:*
 ```json
 {
-    "asset": "ETH/USD",
+    "pair": "ETH/USD",
     "price": 3000.00,
-    "timestamp": 1678886400
+    "timestamp": 1678886400,
+    "imageUrl": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040"
 }
 ```
 
@@ -116,14 +118,16 @@ GET /api/price/all/brl
 ```json
 [
     {
-        "asset": "ETH/BRL",
+        "pair": "ETH/BRL",
         "price": 15000.00,
-        "timestamp": 1678886400
+        "timestamp": 1678886400,
+        "imageUrl": "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040"
     },
     {
-        "asset": "BTC/BRL",
+        "pair": "BTC/BRL",
         "price": 225000.00,
-        "timestamp": 1678886400
+        "timestamp": 1678886400,
+        "imageUrl": "https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040"
     }
 ]
 ```
