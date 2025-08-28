@@ -32,7 +32,6 @@ Siga as instruções abaixo para ter uma cópia do projeto rodando em sua máqui
 1.  Clone o repositório:
     ```sh
     git clone https://github.com/dev-araujo/chainlink-price-feed.git
-    cd chainlink-price-feed
     ```
 
 2.  Crie e configure o arquivo `.env`:
