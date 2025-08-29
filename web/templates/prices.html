@@ -3,7 +3,8 @@
     <img src="{{.ImageURL}}" alt="{{.Pair}}">
     <div>
         <strong>{{.Pair}}</strong>
-        <p>R${{.Price}}</p>
+        <p>{{.CurrencySymbol}}{{.Price}}</p>
+        <small>Atualizado: {{.LastUpdate}}</small>
     </div>
 </div>
 {{end}}
