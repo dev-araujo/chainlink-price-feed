@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -27,9 +28,16 @@ type PriceViewModel struct {
 	CurrencySymbol string
 }
 
+var currencySymbols = map[string]string{
+	"brl": "R$",
+	"usd": "$",
+}
+
+var templates = template.Must(template.ParseFiles("./web/templates/prices.html"))
+
 func pricesHandler(c *gin.Context) {
 	currency := c.Param("currency")
-	apiURL := fmt.Sprintf("http://localhost:8080/api/price/all/%s", currency)
+	apiURL := getAPIURL(currency)
 
 	resp, err := http.Get(apiURL)
 	if err != nil {
@@ -50,10 +58,8 @@ func pricesHandler(c *gin.Context) {
 		return
 	}
 
-	var currencySymbol string
-	if currency == "brl" {
-		currencySymbol = "R$"
-	} else {
+	currencySymbol, ok := currencySymbols[currency]
+	if !ok {
 		currencySymbol = "$"
 	}
 
@@ -68,13 +74,18 @@ func pricesHandler(c *gin.Context) {
 		}
 	}
 
-	tmpl, err := template.ParseFiles("./web/templates/prices.html")
+	err = templates.ExecuteTemplate(c.Writer, "prices.html", viewModels)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Error parsing template: %v", err)
-		return
+		c.String(http.StatusInternalServerError, "Error executing template: %v", err)
 	}
+}
 
-	tmpl.Execute(c.Writer, viewModels)
+func getAPIURL(currency string) string {
+	baseURL := os.Getenv("API_URL")
+	if baseURL == "" {
+		baseURL = "http://localhost:8080"
+	}
+	return fmt.Sprintf("%s/api/price/all/%s", baseURL, currency)
 }
 
 func main() {
@@ -89,8 +100,13 @@ func main() {
 
 	router.GET("/prices/all/:currency", pricesHandler)
 
-	serverAddr := fmt.Sprintf(":%s", "8081")
-	log.Printf("Iniciando servidor web na porta %s", "8081")
+	port := os.Getenv("WEB_PORT")
+	if port == "" {
+		port = "8081"
+	}
+	serverAddr := fmt.Sprintf(":%s", port)
+
+	log.Printf("Iniciando servidor web na porta %s", port)
 	if err := router.Run(serverAddr); err != nil {
 		log.Fatalf("Falha ao iniciar o servidor web: %v", err)
 	}
