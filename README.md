@@ -1,9 +1,5 @@
 
-  
 <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=5965E0&labelColor=121214" alt="License">
-
-
-  
 
 <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go"> <img src="https://img.shields.io/badge/Gin-0077B5?style=for-the-badge&logo=gin&logoColor=white" alt="Gin"> <img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Go-Ethereum"> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"> <img src="https://img.shields.io/badge/Chainlink-375BD2?style=for-the-badge&logo=chainlink&logoColor=white" alt="Chainlink">
 
@@ -11,7 +7,7 @@
 
 Esta API, desenvolvida em **Go**, atua como uma ponte para os **Chainlink Data Feeds**, permitindo que aplicações acessem dados de preços da **blockchain Ethereum** de forma simples e eficiente.
 
-A aplicação se conecta a um nó da rede Ethereum, interage com os contratos inteligentes da Chainlink para buscar os preços de ativos e os expõe através de uma API RESTful.
+A aplicação se conecta a um **nó da rede Ethereum**, interage com os **contratos inteligentes da Chainlink** para buscar os preços de ativos e os expõe através de uma API RESTful. Além disso, a aplicação inclui uma **interface web simples**(feita com HTMX) para visualizar esses preços.
 
 <img src='./assets/gopher-link.png' width='300'>
 
@@ -21,6 +17,7 @@ A aplicação se conecta a um nó da rede Ethereum, interage com os contratos in
 * [Gin](https://github.com/gin-gonic/gin)
 * [Go-Ethereum](https://github.com/ethereum/go-ethereum)
 * [Docker](https://www.docker.com/)
+* [HTMX](https://htmx.org/)
 
 ## 🚀 Executando a aplicação
 
@@ -41,11 +38,13 @@ Siga as instruções abaixo para ter uma cópia do projeto rodando em sua máqui
     Edite o arquivo `.env` com sua URL de RPC da Ethereum:
 
 ```
-   RPC_URL="https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID" # URL do nó RPC da Ethereum
-   SERVER_PORT="8080"
-   GIN_MODE="release"
-   WEB_PORT="8081"
-   API_URL="http://localhost:8080"
+
+RPC_URL="https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID" # URL do nó RPC da Ethereum
+SERVER_PORT="8080"
+GIN_MODE="release"
+WEB_PORT="8081"
+API_URL="http://localhost:8080"
+
 ```
 
    > **💡 Dica:** Para um RPC gratuito, considere usar a [Public Node](https://ethereum.publicnode.com/).
@@ -153,6 +152,25 @@ GET /api/price/all/brl
     }
 ]
 ```
+
+-----
+
+## Interface Web
+
+<img src="./assets/interface.png" alt="Interface web"/>
+
+Uma interface web simples foi incluída no projeto para consumir os endpoints da API e exibir os preços de forma visualmente agradável.
+
+A interface utiliza o **HTMX** para carregar os dados dinamicamente, permitindo que o usuário alterne entre as moedas (USD e BRL) sem a necessidade de recarregar a página.
+
+**Características:**
+
+  * **HTML/CSS:** Frontend leve e moderno.
+  * **HTMX:** Para requisições assíncronas e atualização de conteúdo.
+  * **Dinâmica:** Permite visualizar os preços de todos os ativos suportados tanto em USD quanto em BRL.
+
+
+
 
 -----
 
