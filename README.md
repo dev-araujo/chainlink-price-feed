@@ -5,7 +5,7 @@
 
 # Chainlink Price Feed com GO
 
-Esta API, desenvolvida em **Go**, atua como uma ponte para os **Chainlink Data Feeds**, permitindo que aplicações acessem dados de preços da **blockchain Ethereum** de forma simples e eficiente.
+Esta API, desenvolvida em **Go**, atua como uma ponte para os **[Chainlink Data Feeds](https://docs.chain.link/data-feeds/price-feeds/addresses?page=1&testnetPage=1&testnetSearch=)**, permitindo que aplicações acessem dados de preços da **blockchain Ethereum** de forma simples e eficiente.
 
 A aplicação se conecta a um **nó da rede Ethereum**, interage com os **contratos inteligentes da Chainlink** para buscar os preços de ativos e os expõe através de uma API RESTful. Além disso, a aplicação inclui uma **interface web simples**(feita com HTMX) para visualizar esses preços.
 
