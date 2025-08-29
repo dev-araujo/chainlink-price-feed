@@ -25,7 +25,7 @@
         </div>
 
         <div class="controls">
-          <select id="currency-select">
+          <select id="currency-select" name="currency">
             <option value="brl">BRL</option>
             <option value="usd">USD</option>
           </select>
@@ -38,7 +38,7 @@
         id="price-list-container"
         class="price-list"
         hx-get="/prices/all/brl"
-        hx-trigger="load"
+        hx-trigger="load, change from:#currency-select"
         hx-swap="innerHTML"
         hx-indicator="#loading-indicator"
       ></div>
@@ -54,23 +54,11 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const currencySelect = document.getElementById("currency-select");
-        const priceListContainer = document.getElementById(
-          "price-list-container"
-        );
-
-        currencySelect.addEventListener("change", function () {
-          const selectedCurrency = this.value;
-          const newUrl = `/prices/all/${selectedCurrency}`;
-
-          priceListContainer.setAttribute("hx-get", newUrl);
-
-          htmx.ajax("GET", newUrl, {
-            target: "#price-list-container",
-            swap: "innerHTML",
-          });
-        });
+      document.body.addEventListener('htmx:configRequest', function(evt) {
+        if (evt.detail.triggeringEvent && evt.detail.triggeringEvent.target.id === 'currency-select') {
+          const currency = evt.detail.triggeringEvent.target.value;
+          evt.detail.path = `/prices/all/${currency}`;
+        }
       });
     </script>
   </body>
