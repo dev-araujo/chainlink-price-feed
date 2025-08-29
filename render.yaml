@@ -1,0 +1,27 @@
+services:
+  # Golang
+  - type: web
+    name: api
+    env: go
+    dockerfilePath: Dockerfile.api
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: RPC_URL
+        value: sua-url-de-rpc-aqui
+      - key: SERVER_PORT
+        value: 8080
+      - key: GIN_MODE
+        value: release
+    
+  # Front-end
+  - type: web
+    name: web
+    env: go
+    dockerfilePath: Dockerfile.web
+    plan: starter
+    envVars:
+      - key: WEB_PORT
+        value: 8081
+      - key: API_URL
+        value: http://api:8080
