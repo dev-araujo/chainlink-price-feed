@@ -1,3 +1,4 @@
+
   
 <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=5965E0&labelColor=121214" alt="License">
 
@@ -16,10 +17,10 @@ A aplicação se conecta a um nó da rede Ethereum, interage com os contratos in
 
 ## 🛠️ Stack
 
-*   [Go](https://golang.org/)
-*   [Gin](https://github.com/gin-gonic/gin)
-*   [Go-Ethereum](https://github.com/ethereum/go-ethereum)
-*   [Docker](https://www.docker.com/)
+* [Go](https://golang.org/)
+* [Gin](https://github.com/gin-gonic/gin)
+* [Go-Ethereum](https://github.com/ethereum/go-ethereum)
+* [Docker](https://www.docker.com/)
 
 ## 🚀 Executando a aplicação
 
@@ -36,12 +37,17 @@ Siga as instruções abaixo para ter uma cópia do projeto rodando em sua máqui
     ```sh
     cp .env.example .env
     ```
+
     Edite o arquivo `.env` com sua URL de RPC da Ethereum:
-    ```
-    RPC_URL="https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID"
-    SERVER_PORT="8080"
-    GIN_MODE="release"
-    ```
+
+```
+   RPC_URL="https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID" # URL do nó RPC da Ethereum
+   SERVER_PORT="8080"
+   GIN_MODE="release"
+   WEB_PORT="8081"
+   API_URL="http://localhost:8080"
+```
+
    > **💡 Dica:** Para um RPC gratuito, considere usar a [Public Node](https://ethereum.publicnode.com/).
 
 ---
@@ -54,47 +60,64 @@ Para iniciar a aplicação, execute:
 ```sh
 docker-compose up --build
 ```
-A API estará disponível em `http://localhost:8080`.
 
----
+A API estará disponível em `http://localhost:8080` e a aplicação web em `http://localhost:8081`.
+
+-----
 
 ### Opção 2: Localmente
 
 **Pré-requisitos:** [Go](https://golang.org/doc/install) (1.24.4+)
 
-Para iniciar a aplicação, execute:
+#### Rodando a API
+
+Para iniciar a API, execute:
+
 ```sh
 go run ./cmd/api/main.go
 ```
+
 A API estará disponível em `http://localhost:8080`.
 
----
+#### Rodando a aplicação Web
+
+Em um terminal separado, para iniciar a aplicação web, execute:
+
+```sh
+go run ./cmd/web/main.go
+```
+
+A aplicação web estará disponível em `http://localhost:8081`.
+
+-----
 
 ## Endpoints da API
 
 A API fornece os seguintes endpoints para consulta:
 
-| Método | Endpoint                  | Descrição                                            |
-| :----- | :------------------------ | :--------------------------------------------------- |
-| `GET`  | `/health`                 | Verifica o status da API.                            |
-| `GET`  | `/api/price/:asset/usd`   | Retorna o preço do ativo especificado em USD.        |
-| `GET`  | `/api/price/:asset/brl`   | Retorna o preço do ativo especificado em BRL.        |
-| `GET`  | `/api/price/all/usd`      | Retorna o preço de todos os ativos suportados em USD. |
-| `GET`  | `/api/price/all/brl`      | Retorna o preço de todos os ativos suportados em BRL. |
+| Método | Endpoint | Descrição |
+| :--- | :--- | :--- |
+| `GET` | `/health` | Verifica o status da API. |
+| `GET` | `/api/price/:asset/usd` | Retorna o preço do ativo especificado em USD. |
+| `GET` | `/api/price/:asset/brl` | Retorna o preço do ativo especificado em BRL. |
+| `GET` | `/api/price/all/usd` | Retorna o preço de todos os ativos suportados em USD. |
+| `GET` | `/api/price/all/brl` | Retorna o preço de todos os ativos suportados em BRL. |
 
 **Parâmetro de Path:**
 
-*   `:asset`: O símbolo do ativo a ser consultado (ex: `btc`, `eth`).
-     - Atualmente os seguintes ativos podem ser consultados: `1inch`, `link`, `btc`, `eth`, `paxg`, `stx`, `uni`
+  * `:asset`: O símbolo do ativo a ser consultado (ex: `btc`, `eth`).
+      - Atualmente os seguintes ativos podem ser consultados: `1inch`, `link`, `btc`, `eth`, `paxg`, `stx`, `uni`
 
 **Exemplo 1: Preço de um único ativo em USD**
 
 *Requisição:*
+
 ```http
 GET /api/price/eth/usd
 ```
 
 *Resposta:*
+
 ```json
 {
     "pair": "ETH/USD",
@@ -107,11 +130,13 @@ GET /api/price/eth/usd
 **Exemplo 2: Preço de todos os ativos em BRL**
 
 *Requisição:*
+
 ```http
 GET /api/price/all/brl
 ```
 
 *Resposta:*
+
 ```json
 [
     {
@@ -129,10 +154,11 @@ GET /api/price/all/brl
 ]
 ```
 
----
+-----
 
 #### Autor 👷
 
-<img src="https://avatars.githubusercontent.com/u/97068163?v=4" width=120 />
+<img src="https://avatars.githubusercontent.com/u/97068163?v=4" width=120>
 
 [Adriano P Araujo](https://www.linkedin.com/in/araujocode/)
+
