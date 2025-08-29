@@ -8,7 +8,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: RPC_URL
-        value: sua-url-de-rpc-aqui
+        value: https://ethereum-rpc.publicnode.com/
       - key: SERVER_PORT
         value: 8080
       - key: GIN_MODE
