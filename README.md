@@ -1,4 +1,3 @@
-
 <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=5965E0&labelColor=121214" alt="License">
 
 <img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Go"> <img src="https://img.shields.io/badge/Gin-0077B5?style=for-the-badge&logo=gin&logoColor=white" alt="Gin"> <img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=ethereum&logoColor=white" alt="Go-Ethereum"> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"> <img src="https://img.shields.io/badge/Chainlink-375BD2?style=for-the-badge&logo=chainlink&logoColor=white" alt="Chainlink">
@@ -8,6 +7,13 @@
 Esta API, desenvolvida em **Go**, atua como uma ponte para os **[Chainlink Data Feeds](https://docs.chain.link/data-feeds/price-feeds/addresses?page=1&testnetPage=1&testnetSearch=)**, permitindo que aplicações acessem dados de preços da **blockchain Ethereum** de forma simples e eficiente.
 
 A aplicação se conecta a um **nó da rede Ethereum**, interage com os **contratos inteligentes da Chainlink** para buscar os preços de ativos e os expõe através de uma API RESTful. Além disso, a aplicação inclui uma **interface web simples**(feita com HTMX) para visualizar esses preços.
+
+## 🎨 Demo
+
+Acesse a aplicação através dos links abaixo:
+
+- **API:** https://chainlink-api.onrender.com
+- **Web:** https://chainlink-golang-web.onrender.com
 
 <img src='./assets/gopher-link.png' width='300'>
 
@@ -179,4 +185,3 @@ A interface utiliza o **HTMX** para carregar os dados dinamicamente, permitindo 
 <img src="https://avatars.githubusercontent.com/u/97068163?v=4" width=120>
 
 [Adriano P Araujo](https://www.linkedin.com/in/araujocode/)
-
