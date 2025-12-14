@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"time"
 
 	"github.com/dev-araujo/chainlink-price-feed/internal/config"
 	"github.com/dev-araujo/chainlink-price-feed/internal/handler"
@@ -44,7 +46,16 @@ func main() {
 
 	serverAddr := fmt.Sprintf(":%s", cfg.ServerPort)
 	log.Printf("Iniciando servidor na porta %s", cfg.ServerPort)
-	if err := router.Run(serverAddr); err != nil {
+
+	srv := &http.Server{
+		Addr:         serverAddr,
+		Handler:      router,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("Falha ao iniciar o servidor: %v", err)
 	}
 }

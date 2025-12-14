@@ -55,9 +55,9 @@ body {
   height: 70px;
 }
 
-#header .header-content .controls img{
-  width:40px;
-  height:40px;
+#header .header-content .controls img {
+  width: 40px;
+  height: 40px;
 }
 .controls {
   display: flex;
@@ -229,4 +229,24 @@ button:active {
   .price-card p {
     font-size: 1.1rem;
   }
+}
+
+.error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.loading {
+  color: #004085;
+  background-color: #cce5ff;
+  border: 1px solid #b8daff;
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+  margin: 1rem 0;
 }

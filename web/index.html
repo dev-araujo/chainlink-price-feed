@@ -36,8 +36,8 @@
   </header>
 
   <div class="container" id="main">
-    <div id="price-list-container" class="price-list" hx-get="/prices/all/brl"
-      hx-trigger="load, change from:#currency-select" hx-swap="innerHTML" hx-indicator="#loading-indicator"></div>
+    <div id="price-list-container" class="price-list" hx-get="/ready" hx-trigger="load" hx-swap="outerHTML"
+      hx-indicator="#loading-indicator"></div>
 
     <div id="loading-indicator" class="skeleton-list htmx-indicator">
       <div class="skeleton-card"></div>
