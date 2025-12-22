@@ -112,8 +112,6 @@ func readyHandler(c *gin.Context) {
 	}
 
 	if isReady {
-		// API está pronta! Retorna o componente original para carregar os preços
-		// O atributo hx-get vai disparar imediatamente por causa do hx-trigger="load" implícito ao inserir
 		html := `
 		<div id="price-list-container" class="price-list" 
 			 hx-get="/prices/all/brl" 
@@ -124,10 +122,6 @@ func readyHandler(c *gin.Context) {
 		c.Header("Content-Type", "text/html")
 		c.String(http.StatusOK, html)
 	} else {
-		// API ainda não está pronta. Retorna um estado de loading que se auto-atualiza
-		// hx-trigger="load delay:2s" faz com que este mesmo endpoint seja chamado novamente em 2s
-		// O target deve ser o próprio elemento pai ou substituído corretamente.
-		// Vamos retornar um div que substitui o conteúdo atual e tenta de novo.
 		html := `
 		<div hx-get="/ready" hx-trigger="load delay:2s" hx-swap="outerHTML">
 			<div class="skeleton-list" style="opacity: 1; text-align: center; padding: 20px;">

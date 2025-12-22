@@ -12,9 +12,18 @@
     rel="stylesheet" />
   <title>Chainlink Price Feed</title>
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+ 
 </head>
 
 <body>
+  <div id="feedback-overlay" class="feedback-overlay">
+    <div class="feedback-content">
+      <div class="spinner"></div>
+      <h2>Iniciando serviços</h2>
+      <p>(Isso pode levar até 1 minuto no plano gratuito)</p>
+    </div>
+  </div>
+
   <header id="header">
     <section class="container header-content">
       <div class="header-content-title">
@@ -50,6 +59,21 @@
   </div>
 
   <script>
+    const feedbackOverlay = document.getElementById('feedback-overlay');
+    const priceListContainer = document.getElementById('price-list-container');
+
+    document.body.addEventListener('htmx:xhr:loadstart', function (evt) {
+      feedbackOverlay.classList.add('active');
+    });
+
+    document.body.addEventListener('htmx:xhr:loadend', function (evt) {
+      feedbackOverlay.classList.remove('active');
+    });
+
+    document.body.addEventListener('htmx:responseError', function (evt) {
+      feedbackOverlay.classList.remove('active');
+    });
+
     document.body.addEventListener('htmx:configRequest', function (evt) {
       if (evt.detail.triggeringEvent && evt.detail.triggeringEvent.target.id === 'currency-select') {
         const currency = evt.detail.triggeringEvent.target.value;
